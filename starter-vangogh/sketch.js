@@ -261,10 +261,18 @@ function draw() {
 
 // ★★★★★★ 第 1 步 开始：把这里的 drawBrushStroke 函数整个换成 Qwen 写的版本 ★★★★★★
 function drawBrushStroke(g, x, y, angle, col) {
-  // 临时版本：只点一个小点
+  // 梵高风格的一笔：短而粗、两头圆的笔触，上面有一道淡淡的亮边
+  g.push();
+  g.translate(x, y);      // 把画笔移到 (x, y)
+  g.rotate(angle);        // 转到风的方向，让笔触顺着风
+  g.strokeCap(ROUND);     // 笔触两头是圆的
   g.stroke(col);
-  g.strokeWeight(2);
-  g.point(x, y);
+  g.strokeWeight(5);
+  g.line(-7, 0, 7, 0);    // 主体：短而粗的一笔
+  g.stroke(255, 60);      // 淡淡的白色
+  g.strokeWeight(1.5);
+  g.line(-5, -1, 5, -1);  // 亮边：让笔触有油画的质感
+  g.pop();
 }
 // ★★★★★★ 第 1 步 结束 ★★★★★★
 
