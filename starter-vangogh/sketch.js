@@ -295,8 +295,23 @@ function skyColor(x, y) {
 
 // ★★★★★★ 第 3 步 开始：把这里的 flowAngle 函数整个换成 Qwen 写的版本 ★★★★★★
 function flowAngle(x, y) {
-  // 临时版本：风永远向右吹
-  return 0;
+  // 返回 (x, y) 这个点“风”的方向（弧度），画笔会沿着这个方向走
+  // 基本风向来自 noise：相邻的点风向差不多，笔触形成平滑的曲线，还会随时间慢慢变化
+  let base = noise(x * 0.003, y * 0.003, frameCount * 0.002) * TWO_PI * 2;
+  let vx = cos(base);
+  let vy = sin(base);
+  // 漩涡：把“从星星指向这个点的方向”转 90 度（-dy, dx），越靠近星星转圈的力越强
+  for (const s of stars) {
+    let dx = x - s.x;
+    let dy = y - s.y;
+    let d = max(dist(x, y, s.x, s.y), 1);
+    if (d < s.r * 4) {
+      let weight = 1 - d / (s.r * 4);
+      vx += (-dy / d) * weight * 3;
+      vy += (dx / d) * weight * 3;
+    }
+  }
+  return atan2(vy, vx);
 }
 // ★★★★★★ 第 3 步 结束 ★★★★★★
 
