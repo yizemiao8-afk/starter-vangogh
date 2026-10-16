@@ -278,8 +278,18 @@ function drawBrushStroke(g, x, y, angle, col) {
 
 // ★★★★★★ 第 2 步 开始：把这里的 skyColor 函数整个换成 Qwen 写的版本 ★★★★★★
 function skyColor(x, y) {
-  // 临时版本：所有地方都是同一种蓝色
-  return color(40, 70, 160);
+  // 返回 (x, y) 这个点的天空颜色：深蓝浅蓝自然交织，靠近星星变成黄色
+  let n = noise(x * 0.01, y * 0.01); // 平滑的随机数：相邻的点颜色相近
+  let c = lerpColor(color("#1b2a6b"), color("#6c8fd8"), n); // 在深蓝和浅蓝之间混合
+  // 越靠近星星，越往黄色里混：距离为 0 时最黄，超过半径 2.5 倍就不黄了
+  for (const s of stars) {
+    let d = dist(x, y, s.x, s.y);
+    if (d < s.r * 2.5) {
+      c = lerpColor(c, color("#f2d34f"), 1 - d / (s.r * 2.5));
+    }
+  }
+  c.setAlpha(random(150, 230)); // 每一笔透明度随机一点，叠起来更有层次
+  return c;
 }
 // ★★★★★★ 第 2 步 结束 ★★★★★★
 
