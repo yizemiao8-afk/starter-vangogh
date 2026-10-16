@@ -335,7 +335,28 @@ function drawStar(s) {
 
 // ★★★★★★ 第 5 步 开始：把这里的 onGesture 函数整个换成 Qwen 写的版本 ★★★★★★
 function onGesture(g, hand) {
-  // 临时版本：还没有手势动作
+  // 一个手势刚刚开始时调用：根据手势做不同的事
+  let tip = hand.points[8];   // 食指指尖
+  let palm = hand.points[9];  // 手掌中心
+  // ☝️ 食指向上：在指尖点亮一颗新星星（新星星周围马上会出现新的漩涡）
+  if (g === "Pointing_Up" && stars.length < MAX_STARS) {
+    stars.push({ x: tip.x, y: tip.y, r: random(12, 24), phase: random(TWO_PI) });
+    playStarNote(stars.length); // 叮——星星越多，音越高
+  }
+  // 👍 拇指向上：在手掌中心放一颗大星星
+  if (g === "Thumb_Up" && stars.length < MAX_STARS) {
+    stars.push({ x: palm.x, y: palm.y, r: random(34, 44), phase: random(TWO_PI) });
+    playStarNote(stars.length);
+  }
+  // ✊ 握拳：把月亮移到拳头的位置
+  if (g === "Closed_Fist") {
+    moon = { x: palm.x, y: palm.y };
+    playStarNote(0);
+  }
+  // ✌️ 剪刀手：换一张新画布，重新开始
+  if (g === "Victory") {
+    resetSky();
+  }
 }
 // ★★★★★★ 第 5 步 结束 ★★★★★★
 
