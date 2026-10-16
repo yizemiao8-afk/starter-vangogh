@@ -317,10 +317,19 @@ function flowAngle(x, y) {
 
 // ★★★★★★ 第 4 步 开始：把这里的 drawStar 函数整个换成 Qwen 写的版本 ★★★★★★
 function drawStar(s) {
-  // 临时版本：一个白色的小圆
+  // 画一颗会“呼吸”的星星：外面几圈淡黄色的光晕，中间一个亮白色的核
+  // sin 在 -1 和 1 之间来回摆动，大小在 92% 和 108% 之间变化；每颗星星 phase 不同，不会一起呼吸
+  let pulse = 1 + 0.08 * sin(frameCount * 0.1 + s.phase);
+  let r = s.r * pulse;
   noStroke();
-  fill(255);
-  circle(s.x, s.y, s.r);
+  // 光晕：5 个越来越大、非常透明的黄色圆叠在一起，中间最亮，越往外越淡
+  for (let i = 5; i >= 1; i--) {
+    fill(255, 230, 120, 30);
+    circle(s.x, s.y, r * i * 0.8);
+  }
+  // 亮白色的核
+  fill(255, 250, 220);
+  circle(s.x, s.y, r);
 }
 // ★★★★★★ 第 4 步 结束 ★★★★★★
 
